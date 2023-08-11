@@ -1,9 +1,8 @@
-#ifndef _GAME_H_
+#ifndef __GAME_H_
 #define __GAME_H_
 
+/* Prototypes *****************************************************************/
 
-void start_game();
-
-
+extern void start_game();
 
 #endif
