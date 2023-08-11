@@ -8,16 +8,14 @@
 
 #include "functionlib.h"
 
-/* Defines
- * ********************************************************+***********/
+/* Defines ********************************************************************/
 
 // TODO Check with different sizes
 #define BOARD_SIZE_X 7
 #define BOARD_SIZE_Y 6
 #define CHIP_NUMBER_TO_WIN 4
 
-/* Types
- * **********************************************************************/
+/* Types **********************************************************************/
 
 typedef enum field_placement_t {
     EMPTY,
@@ -25,8 +23,7 @@ typedef enum field_placement_t {
     CHIP_PLAYER_2
 } field_placement_t;
 
-/* Prototypes
- * *****************************************************************/
+/* Prototypes *****************************************************************/
 
 static void show_title();
 static void show_board(); /* ToDo why no typecast? */
@@ -42,8 +39,7 @@ static void check_field_vertical(field_placement_t (*board)[BOARD_SIZE_Y]);
 static void check_field_diagonal(field_placement_t (*board)[BOARD_SIZE_Y]);
 static void show_winning_message(field_placement_t winner);
 
-/* Public Functions
- * ***********************************************************/
+/* Public Functions ***********************************************************/
 
 extern void start_game() {
     /* In this variable the chip positions is saved. Zero on the Y field is the
@@ -67,8 +63,7 @@ extern void start_game() {
     }
 }
 
-/* Private Functions
- * **********************************************************/
+/* Private Functions **********************************************************/
 
 static void show_title() {
     printf(

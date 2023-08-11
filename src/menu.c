@@ -15,14 +15,12 @@
 #include <conio.h>
 #endif
 
-/* Prototypes
- * *****************************************************************/
+/* Prototypes *****************************************************************/
 
 static void show_menu(uint8_t selection);
 static bool handle_key_input(uint8_t *selection_position);
 
-/* Public Functions
- * ***********************************************************/
+/* Public Functions ***********************************************************/
 
 enum menu_selection_t menu() {
     uint8_t selection_position = 0;
@@ -50,8 +48,7 @@ enum menu_selection_t menu() {
     clear_window();
 }
 
-/* Private Functions
- * **********************************************************/
+/* Private Functions **********************************************************/
 
 static void show_menu(uint8_t selection) {
     printf(

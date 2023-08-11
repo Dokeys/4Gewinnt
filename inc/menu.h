@@ -1,8 +1,7 @@
 #ifndef __MENU_H_
 #define __MENU_H_
 
-/* Types
- * **********************************************************************/
+/* Types **********************************************************************/
 
 typedef enum menu_selection_t {
     PLAY,
@@ -11,8 +10,7 @@ typedef enum menu_selection_t {
     MOVE_CURSOR
 } menu_selection_t;
 
-/* Prototypes
- * *****************************************************************/
+/* Prototypes *****************************************************************/
 
 menu_selection_t menu();
 

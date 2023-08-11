@@ -12,8 +12,7 @@
 #include <conio.h>
 #endif
 
-/* Public Functions
- * ***********************************************************/
+/* Public Functions ***********************************************************/
 
 extern void disable_wait_for_return() {
     static struct termios oldt, newt;

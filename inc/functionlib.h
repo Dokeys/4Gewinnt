@@ -4,14 +4,12 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-/* Defines
- * ********************************************************************/
+/* Defines ********************************************************************/
 
 #define clear() printf("\033[H\033[J")
 #define gotoxy(x, y) printf("\033[%d;%dH", (y), (x))
 
-/* Types
- * **********************************************************************/
+/* Types **********************************************************************/
 
 typedef enum key_selection_t {
     UNKNOWN_KEY,
@@ -22,8 +20,7 @@ typedef enum key_selection_t {
     RETURN_KEY
 } key_selection_t;
 
-/* Prototypes
- * *****************************************************************/
+/* Prototypes *****************************************************************/
 
 extern void disable_wait_for_return();
 extern void reenable_wait_for_return();
