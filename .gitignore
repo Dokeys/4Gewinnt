@@ -1,0 +1,3 @@
+#exclute build and bin files
+/bin/program
+/build/*
