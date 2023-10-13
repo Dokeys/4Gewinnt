@@ -3,29 +3,29 @@ LD= gcc
 
 CFLAGS= -std=c99 -Wall -g
 INC_DIR= inc/
-DFLAGS=
+LDFLAGS=
 LIBS =  
 
-BIN_FILE = bin/program
+BIN_FILE = 4Wins.elf 
 BUILD_DIR = build/
 
 all: $(BUILD_DIR)main.o $(BUILD_DIR)menu.o $(BUILD_DIR)game.o $(BUILD_DIR)functionlib.o
-	$(CC) $? -o $(BIN_FILE)
+	$(LD) $(LDFLAGS) $? -o $(BIN_FILE)
 
 $(BUILD_DIR)main.o: src/main.c
-	$(CC) $(CFLAGS) $(LDFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
+	$(CC) $(CFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
 
 $(BUILD_DIR)menu.o: src/menu.c
-	$(CC) $(CFLAGS) $(LDFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
+	$(CC) $(CFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
 
 $(BUILD_DIR)game.o: src/game.c
-	$(CC) $(CFLAGS) $(LDFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
+	$(CC) $(CFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
 
 $(BUILD_DIR)functionlib.o: src/functionlib.c
-	$(CC) $(CFLAGS) $(LDFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
+	$(CC) $(CFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
 
 run:
-	$(BIN_FILE)
+	./$(BIN_FILE)
 
 # lay next for changing layout
 debug:
@@ -36,5 +36,5 @@ format:
 	clang-format -i inc/*.h
 
 clean:
-	rm $(BUILD_DIR)*.o
-	rm $(BIN_FILE) 
+	rm -f $(BUILD_DIR)*.o
+	rm -f $(BIN_FILE) 
