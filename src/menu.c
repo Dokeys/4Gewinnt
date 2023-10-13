@@ -1,3 +1,13 @@
+/*
+ * menu.c
+ *
+ * Created on: 14.12.22
+ * Author: Dominik Knoll
+ *
+ * Description:
+ * Source file for the main menu of the 4Wins game.
+ *
+ */
 #include "menu.h"
 
 #include <inttypes.h>
@@ -15,42 +25,45 @@
 #include <conio.h>
 #endif
 
+/* Defines ********************************************************************/
+#define MENU_ENTRIES 3
+
 /* Prototypes *****************************************************************/
 
-static void show_menu(uint8_t selection);
-static bool handle_key_input(uint8_t *selection_position);
+static void show_menu(const menu_selection_t selection_position);
+static bool handle_key_input(menu_selection_t *selection_position);
 
 /* Public Functions ***********************************************************/
 
-enum menu_selection_t menu() {
-    uint8_t selection_position = 0;
+extern menu_selection_t menu() {
+    menu_selection_t selection_position = PLAY;
+    bool is_return_pressed = false;
 
     disable_wait_for_return();
-    while (1) {
+
+    clear_window();
+    show_menu(selection_position);
+
+    do {
+        is_return_pressed = handle_key_input(&selection_position);
         clear_window();
         show_menu(selection_position);
-        if (handle_key_input(&selection_position)) {
-            switch (selection_position) {
-                case 0:
-                    return PLAY;
-                    break;
-                case 1:
-                    return OPTIONS;
-                    break;
-                case 2:
-                    return QUIT_GAME;
-                    break;
-            }
-        }
-    }
-
+    } while (!is_return_pressed);
+	
+	clear_window();
     reenable_wait_for_return();
-    clear_window();
+    return selection_position;
 }
 
 /* Private Functions **********************************************************/
 
-static void show_menu(uint8_t selection) {
+/**
+ * Shows the menu with the arrow depending on the \p selection_position.
+ *
+ * @param[in] selection_position The selection position where the arrow shout appear.
+ */
+static void show_menu(const menu_selection_t selection_position) {
+    gotoxy(0, 0);
     printf(
         " ╔═════════════════════════════════╗\n"
         " ║ 4 Gewinnt - by Double Dynominik ║\n"
@@ -61,23 +74,40 @@ static void show_menu(uint8_t selection) {
         "\t\tOptions\n"
         "\t\tExit\n");
 
-    gotoxy(13, 6 + selection);
+    gotoxy(13, 6 + selection_position);
     printf("->");
 }
 
-static bool handle_key_input(uint8_t *selection_position) {
-    switch (get_key_input()) {
+/**
+ * Reads key input and changes the menu selection position.
+ * This function blocks the blocks the program until a key is pressed.
+ *
+ * @param[in, out] selection_position Input the current selection position in the menu. 
+ * \p selection_position will be changed from this function depending on the key input.
+ *
+ * @return true when return is pressed and false when not.
+ */
+static bool handle_key_input(menu_selection_t *selection_position) {
+    bool is_return_pressed = false;
+    key_selection_t key_selection = UNKNOWN_KEY;
+
+    key_selection = get_key_input();
+    switch (key_selection) {
         case ARROW_UP:
-            if (*selection_position > 0) (*selection_position)--;
+            if (*selection_position > 0)
+                *selection_position = *selection_position - 1;
             break;
         case ARROW_DOWN:
-            if (*selection_position < 2) (*selection_position)++;
+            if (*selection_position < MENU_ENTRIES - 1)
+                *selection_position = *selection_position + 1;
             break;
         case RETURN_KEY:
-            return true;
+            is_return_pressed = true;
             break;
         default:
+			printf("Unhanded input!\n");
             break;
     }
-    return false;
+
+    return is_return_pressed;
 }
