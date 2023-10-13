@@ -45,9 +45,11 @@ extern void start_game() {
     /* In this variable the chip positions is saved. Zero on the Y field is the
     lowes and zero on the X field is the left one.*/
     field_placement_t board[BOARD_SIZE_X][BOARD_SIZE_Y];
-    memset(board, 0x00, sizeof(board));
     uint8_t selection_position = 0;
     field_placement_t current_player = CHIP_PLAYER_1;
+	
+	disable_wait_for_return();
+    memset(board, 0x00, sizeof(board));
 
     while (1) { /* main game loop */
         clear_window();
@@ -250,5 +252,6 @@ static void check_field_diagonal(field_placement_t (*board)[BOARD_SIZE_Y]) {
 
 static void show_winning_message(field_placement_t winner) {
     printf("\n\nPlayer %d wins!\n\n", winner);
-    exit(1);
+	reenable_wait_for_return();
+    exit(0);
 }
