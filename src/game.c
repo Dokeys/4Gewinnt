@@ -47,8 +47,8 @@ extern void start_game() {
     field_placement_t board[BOARD_SIZE_X][BOARD_SIZE_Y];
     uint8_t selection_position = 0;
     field_placement_t current_player = CHIP_PLAYER_1;
-	
-	disable_wait_for_return();
+
+    disable_wait_for_return();
     memset(board, 0x00, sizeof(board));
 
     while (1) { /* main game loop */
@@ -252,6 +252,6 @@ static void check_field_diagonal(field_placement_t (*board)[BOARD_SIZE_Y]) {
 
 static void show_winning_message(field_placement_t winner) {
     printf("\n\nPlayer %d wins!\n\n", winner);
-	reenable_wait_for_return();
+    reenable_wait_for_return();
     exit(0);
 }

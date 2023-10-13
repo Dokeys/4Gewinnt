@@ -49,7 +49,7 @@ extern void clear_window() {
 
 /**
  * This function handles the key inputs. It blocks the program until a key is
- * pressed. 
+ * pressed.
  */
 extern key_selection_t get_key_input() {
     int s;

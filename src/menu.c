@@ -49,8 +49,8 @@ extern menu_selection_t menu() {
         clear_window();
         show_menu(selection_position);
     } while (!is_return_pressed);
-	
-	clear_window();
+
+    clear_window();
     reenable_wait_for_return();
     return selection_position;
 }
@@ -60,7 +60,8 @@ extern menu_selection_t menu() {
 /**
  * Shows the menu with the arrow depending on the \p selection_position.
  *
- * @param[in] selection_position The selection position where the arrow shout appear.
+ * @param[in] selection_position The selection position where the arrow shout
+ * appear.
  */
 static void show_menu(const menu_selection_t selection_position) {
     gotoxy(0, 0);
@@ -82,8 +83,9 @@ static void show_menu(const menu_selection_t selection_position) {
  * Reads key input and changes the menu selection position.
  * This function blocks the blocks the program until a key is pressed.
  *
- * @param[in, out] selection_position Input the current selection position in the menu. 
- * \p selection_position will be changed from this function depending on the key input.
+ * @param[in, out] selection_position Input the current selection position in
+ * the menu. \p selection_position will be changed from this function depending
+ * on the key input.
  *
  * @return true when return is pressed and false when not.
  */
@@ -105,7 +107,7 @@ static bool handle_key_input(menu_selection_t *selection_position) {
             is_return_pressed = true;
             break;
         default:
-			printf("Unhanded input!\n");
+            printf("Unhanded input!\n");
             break;
     }
 
