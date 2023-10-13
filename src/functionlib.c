@@ -12,11 +12,11 @@
 #include <conio.h>
 #endif
 
+struct termios oldt, newt;
+
 /* Public Functions ***********************************************************/
 
 extern void disable_wait_for_return() {
-    static struct termios oldt, newt;
-
     printf("\e[?25l"); /* hide the cursor */
 
     /*tcgetattr gets the parameters of the current terminal STDIN_FILENO will
@@ -35,8 +35,6 @@ extern void disable_wait_for_return() {
 }
 
 extern void reenable_wait_for_return() {
-    static struct termios oldt;
-
     printf("\e[?25h"); /* re-enable the cursor */
     /*restore the old settings*/
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
@@ -49,8 +47,10 @@ extern void clear_window() {
 #endif
 }
 
-/* This function handles the key inputs. It blocks the program until a key is
- * pressed. */
+/**
+ * This function handles the key inputs. It blocks the program until a key is
+ * pressed. 
+ */
 extern key_selection_t get_key_input() {
     int s;
     if (getchar() == '\033') {  // if the first value is esc
