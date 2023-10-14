@@ -36,47 +36,51 @@ typedef enum field_placement_t {
 
 /* Variables ******************************************************************/
 
-field_placement_t board[BOARD_SIZE_X][BOARD_SIZE_Y] = {
-    0};  // TODO set the array at the start of start_game() to zero.
+field_placement_t board[BOARD_SIZE_X][BOARD_SIZE_Y];
 
 /* Prototypes *****************************************************************/
 
 static void show_title();
+static void clear_board();
 static void show_board();
 static void show_placement_arrow(const uint8_t arrow_position,
-                                 field_placement_t player);
+                                 const field_placement_t current_player);
 static bool handle_key_input(uint8_t *arrow_position);
 static bool set_chip(field_placement_t current_player,
                      const uint8_t arrow_position);
 static void switch_player(field_placement_t *current_player);
-static void check_field();
-static void check_field_horizontal();
-static void check_field_vertical();
-static void check_field_diagonal();
-static void show_winning_message(field_placement_t winner);
+static bool check_field();
+static bool check_field_horizontal(field_placement_t *winner);
+static bool check_field_vertical(field_placement_t *winner);
+static bool check_field_diagonal(field_placement_t *winner);
+static void show_winning_message(const field_placement_t winner);
 
 /* Public Functions ***********************************************************/
 
 extern void start_game() {
-    /* In this variable the chip positions is saved. Zero on the Y field is the
-    lowes and zero on the X field is the left one.*/
-    uint8_t selection_position = 0;
+    uint8_t arrow_position = 0;
     field_placement_t current_player = CHIP_PLAYER_1;
+    bool is_return_pressed = false, is_chip_set = false, is_game_over = false;
 
     disable_wait_for_return();
+    clear_board();
 
-    while (1) { /* main game loop */
+    do {
         clear_window();
         show_title();
-        show_placement_arrow(selection_position, current_player);
+        show_placement_arrow(arrow_position, current_player);
         show_board();
-        check_field();
-        if (handle_key_input(&selection_position)) {
-            if (set_chip(current_player, selection_position)) {
+        is_game_over = check_field();
+        is_return_pressed = handle_key_input(&arrow_position);
+        if (is_return_pressed) {
+            is_chip_set = set_chip(current_player, arrow_position);
+            if (is_chip_set) {
                 switch_player(&current_player);
             }
         }
-    }
+    }while (!is_game_over);
+
+    reenable_wait_for_return();
 }
 
 /* Private Functions **********************************************************/
@@ -87,6 +91,8 @@ static void show_title() {
         " ║   4Wins - by Double Dynominik   ║\n"
         " ╚═════════════════════════════════╝\n");
 }
+
+static void clear_board() { memset(board, 0x00, sizeof(board)); }
 
 static void show_board() {
     uint8_t x, y;
@@ -121,7 +127,7 @@ static void show_board() {
 }
 
 static void show_placement_arrow(const uint8_t arrow_position,
-                                 field_placement_t player) {
+                                 const field_placement_t current_player) {
     if (arrow_position >= BOARD_SIZE_X) {
         printf("Error:\twrong position!\n");
         exit(1);
@@ -132,7 +138,7 @@ static void show_placement_arrow(const uint8_t arrow_position,
 
     for (uint8_t i = 0; i < arrow_position; i++) printf("  ");
 
-    switch (player) {
+    switch (current_player) {
         case CHIP_PLAYER_1:
             printf("O\n");
             break;
@@ -173,18 +179,18 @@ static bool handle_key_input(uint8_t *arrow_position) {
 
 static bool set_chip(field_placement_t current_player,
                      const uint8_t arrow_position) {
-	bool is_chip_set = false; 
+    bool is_chip_set = false;
     uint8_t y, empty_field_y;
 
     for (y = 0; board[arrow_position][y] != EMPTY; y++)
-	;
-	empty_field_y = y;
+        ;
+    empty_field_y = y;
 
-   	if (empty_field_y < BOARD_SIZE_Y) {
-		board[arrow_position][empty_field_y] = current_player;
-       	is_chip_set = true;
-   	}
-	
+    if (empty_field_y < BOARD_SIZE_Y) {
+        board[arrow_position][empty_field_y] = current_player;
+        is_chip_set = true;
+    }
+
     return is_chip_set;
 }
 
@@ -195,13 +201,27 @@ static void switch_player(field_placement_t *current_player) {
         *current_player = CHIP_PLAYER_1;
 }
 
-static void check_field() {
-    check_field_horizontal();
-    check_field_vertical();
-    check_field_diagonal();
+static bool check_field() {
+    bool is_game_over = false;
+    bool is_winner_row_detected = false;
+    field_placement_t winner;
+
+    is_winner_row_detected = check_field_horizontal(&winner);
+    if (!is_winner_row_detected)
+        is_winner_row_detected = check_field_vertical(&winner);
+    if (!is_winner_row_detected)
+        is_winner_row_detected = check_field_diagonal(&winner);
+
+    if (is_winner_row_detected) {
+        show_winning_message(winner);
+		is_game_over = true;
+    }
+	
+	return is_game_over;
 }
 
-static void check_field_horizontal() {
+static bool check_field_horizontal(field_placement_t *winner) {
+    bool is_winner_row_detected = false;
     uint8_t chips_in_a_row = 0;
     field_placement_t chip_in_last_field = EMPTY, chip_in_current_field;
 
@@ -211,17 +231,22 @@ static void check_field_horizontal() {
             if ((chip_in_last_field == chip_in_current_field) &&
                 (chip_in_current_field != EMPTY)) {
                 chips_in_a_row++;
-                if (chips_in_a_row >= CHIP_NUMBER_TO_WIN - 1)
-                    show_winning_message(chip_in_current_field);
+                if (chips_in_a_row >= CHIP_NUMBER_TO_WIN - 1 &&
+                    !is_winner_row_detected) {
+                    is_winner_row_detected = true;
+                    *winner = chip_in_current_field;
+                }
             } else {
                 chips_in_a_row = 0;
             }
             chip_in_last_field = chip_in_current_field;
         }
     }
+    return is_winner_row_detected;
 }
 
-static void check_field_vertical() {
+static bool check_field_vertical(field_placement_t *winner) {
+    bool is_winner_row_detected = false;
     uint8_t chips_in_a_row = 0;
     field_placement_t chip_in_last_field = EMPTY, chip_in_current_field;
 
@@ -231,17 +256,23 @@ static void check_field_vertical() {
             if ((chip_in_last_field == chip_in_current_field) &&
                 (chip_in_current_field != EMPTY)) {
                 chips_in_a_row++;
-                if (chips_in_a_row >= CHIP_NUMBER_TO_WIN - 1)
-                    show_winning_message(chip_in_current_field);
+                if (chips_in_a_row >= CHIP_NUMBER_TO_WIN - 1 && !is_winner_row_detected)
+				{
+					is_winner_row_detected = true;
+					*winner = chip_in_current_field;
+				}
             } else {
                 chips_in_a_row = 0;
             }
             chip_in_last_field = chip_in_current_field;
         }
     }
+	
+	return is_winner_row_detected;
 }
 
-static void check_field_diagonal() {
+static bool check_field_diagonal(field_placement_t *winner) {
+    bool is_winner_row_detected = false;
     uint8_t chips_in_a_row = 0;
     field_placement_t chip_in_current_field;
 
@@ -261,8 +292,11 @@ static void check_field_diagonal() {
                     } else {
                         break; /*leave for loop if there is a different chip */
                     }
-                    if (chips_in_a_row == CHIP_NUMBER_TO_WIN)
-                        show_winning_message(chip_in_current_field);
+                    if (chips_in_a_row == CHIP_NUMBER_TO_WIN && ! is_winner_row_detected)
+					{
+						is_winner_row_detected = true;
+						*winner = chip_in_current_field;
+					}
                 }
                 for (uint8_t i = 0; i < CHIP_NUMBER_TO_WIN;
                      i++) {                         /* up and left */
@@ -274,16 +308,19 @@ static void check_field_diagonal() {
                     } else {
                         break; /*leave for loop if there is a different chip */
                     }
-                    if (chips_in_a_row == CHIP_NUMBER_TO_WIN)
-                        show_winning_message(chip_in_current_field);
+                    if (chips_in_a_row == CHIP_NUMBER_TO_WIN && is_winner_row_detected)
+					{
+						is_winner_row_detected = true;
+						*winner = chip_in_current_field;
+					}
                 }
             }
         }
     }
+	
+	return is_winner_row_detected;
 }
 
-static void show_winning_message(field_placement_t winner) {
+static void show_winning_message(const field_placement_t winner) {
     printf("\n\nPlayer %d wins!\n\n", winner);
-    reenable_wait_for_return();
-    exit(0);
 }
