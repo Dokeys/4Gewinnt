@@ -8,12 +8,11 @@
  * Main file for the 4Wins game.
  *
  */
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "functionlib.h"
 #include "game.h"
 #include "menu.h"
+
+#include <stdio.h>
 
 int main() {
     menu_selection_t menu_selection;
