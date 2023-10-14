@@ -33,7 +33,6 @@ $(BUILD_DIR)game.o: src/game.c inc/game.h
 	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@ 
 
 $(BUILD_DIR)functionlib.o: src/functionlib.c inc/functionlib.h
-	@echo 'test = $<'
 	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@ 
 
 run:
