@@ -21,19 +21,20 @@ create_folders:
 	fi
 
 $(BIN_FILE): $(BUILD_DIR)main.o $(BUILD_DIR)menu.o $(BUILD_DIR)game.o $(BUILD_DIR)functionlib.o
-	$(LD) $(LIBS) $(LDFLAGS) $? -o $(BIN_FILE)
+	$(LD) $(LIBS) $(LDFLAGS) $^ -o $(BIN_FILE)
 
 $(BUILD_DIR)main.o: src/main.c
 	$(CC) $(CFLAGS) -I$(INC_DIR) -c $? -o $@ 
 
-$(BUILD_DIR)menu.o: src/menu.c
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $? -o $@ 
+$(BUILD_DIR)menu.o: src/menu.c inc/menu.h
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@ 
 
-$(BUILD_DIR)game.o: src/game.c
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $? -o $@ 
+$(BUILD_DIR)game.o: src/game.c inc/game.h
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@ 
 
-$(BUILD_DIR)functionlib.o: src/functionlib.c
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $? -o $@ 
+$(BUILD_DIR)functionlib.o: src/functionlib.c inc/functionlib.h
+	@echo 'test = $<'
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@ 
 
 run:
 	./$(BIN_FILE)
