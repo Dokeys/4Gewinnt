@@ -4,25 +4,36 @@ LD= gcc
 CFLAGS= -std=c99 -Wall -g
 INC_DIR= inc/
 LDFLAGS=
-LIBS =  
+LIBS =
 
 BIN_FILE = 4Wins.elf 
 BUILD_DIR = build/
 
-all: $(BUILD_DIR)main.o $(BUILD_DIR)menu.o $(BUILD_DIR)game.o $(BUILD_DIR)functionlib.o
-	$(LD) $(LDFLAGS) $? -o $(BIN_FILE)
+all: pre_build build_program
+
+pre_build: create_folders
+
+build_program: $(BIN_FILE)
+
+create_folders:
+	@if [ ! -d $(BUILD_DIR) ]; then \
+		mkdir -p $(BUILD_DIR); \
+	fi
+
+$(BIN_FILE): $(BUILD_DIR)main.o $(BUILD_DIR)menu.o $(BUILD_DIR)game.o $(BUILD_DIR)functionlib.o
+	$(LD) $(LIBS) $(LDFLAGS) $? -o $(BIN_FILE)
 
 $(BUILD_DIR)main.o: src/main.c
-	$(CC) $(CFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $? -o $@ 
 
 $(BUILD_DIR)menu.o: src/menu.c
-	$(CC) $(CFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $? -o $@ 
 
 $(BUILD_DIR)game.o: src/game.c
-	$(CC) $(CFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $? -o $@ 
 
 $(BUILD_DIR)functionlib.o: src/functionlib.c
-	$(CC) $(CFLAGS) -I$(INC_DIR) $(LIBS) -c $? -o $@ 
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $? -o $@ 
 
 run:
 	./$(BIN_FILE)
