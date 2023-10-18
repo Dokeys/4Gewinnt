@@ -14,9 +14,9 @@
 /* Types **********************************************************************/
 
 typedef enum menu_selection_t {
-    PLAY,
-    OPTIONS,
-    QUIT_GAME,
+    PLAY = 0,
+    OPTIONS = 1,
+    QUIT_GAME = 2,
 } menu_selection_t;
 
 /* Prototypes *****************************************************************/

@@ -85,10 +85,11 @@ extern void start_game() {
 /* Private Functions **********************************************************/
 
 static void show_title() {
-    printf(
+    printf( ANSI_COLOR_YELLOW
         " ╔═════════════════════════════════╗\n"
         " ║   4Wins - by Double Dynominik   ║\n"
-        " ╚═════════════════════════════════╝\n");
+        " ╚═════════════════════════════════╝\n"
+	ANSI_COLOR_RESET);
 }
 
 static void clear_board() {
@@ -99,7 +100,7 @@ static void show_board() {
     uint8_t x, y;
 
     gotoxy(0, 8);
-    printf("\t__");
+    printf(ANSI_COLOR_RESET "\t__");
     for (x = 0; x < BOARD_SIZE_X; x++) printf("__");
     printf("__\n");
 
@@ -111,10 +112,10 @@ static void show_board() {
                     printf(" ");
                     break;
                 case CHIP_PLAYER_1:
-                    printf("O");
+                    printf(ANSI_COLOR_RED "O" ANSI_COLOR_RESET);
                     break;
                 case CHIP_PLAYER_2:
-                    printf("X");
+                    printf(ANSI_COLOR_YELLOW "@" ANSI_COLOR_RESET);
                     break;
                 default:
                     printf("Error:\tUnknown field placement!\n");
@@ -125,6 +126,7 @@ static void show_board() {
         }
         printf("_\n");
     }
+	printf("" ANSI_COLOR_RESET);
 }
 
 static void show_placement_arrow(const uint8_t arrow_position, const player_t current_player) {
@@ -140,10 +142,10 @@ static void show_placement_arrow(const uint8_t arrow_position, const player_t cu
 
     switch (current_player) {
         case PLAYER_1:
-            printf("O\n");
+            printf(ANSI_COLOR_RED "O\n" ANSI_COLOR_RESET);
             break;
         case PLAYER_2:
-            printf("X\n");
+            printf(ANSI_COLOR_YELLOW "@\n" ANSI_COLOR_RESET);
             break;
         default:
             break;
@@ -312,5 +314,11 @@ static bool check_field_diagonal(player_t *winner) {
 }
 
 static void show_winning_message(const player_t winner) {
-    printf("\n\nPlayer %d wins!\n\n", winner);
+    printf("\n\nPlayer ");
+	if(winner == PLAYER_1) 
+    	printf(ANSI_COLOR_RED "O" ANSI_COLOR_RESET);
+	else
+    	printf(ANSI_COLOR_YELLOW "@" ANSI_COLOR_RESET);
+		
+	printf(" wins!\n\n");
 }
