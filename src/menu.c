@@ -65,18 +65,30 @@ extern menu_selection_t menu() {
  */
 static void show_menu(const menu_selection_t selection_position) {
     gotoxy(0, 0);
-    printf(
+    printf( ANSI_COLOR_YELLOW
         " ╔═════════════════════════════════╗\n"
         " ║   4Wins - by Double Dynominik   ║\n"
-        " ╚═════════════════════════════════╝\n");
+        " ╚═════════════════════════════════╝\n"
+	ANSI_COLOR_RESET);
     gotoxy(0, 6);
-    printf(
-        "\t\tPlay\n"
-        "\t\tOptions\n"
-        "\t\tExit\n");
+
+	if (selection_position == PLAY)
+    	printf(ANSI_COLOR_GREEN "\t\tPlay\n" ANSI_COLOR_RESET);
+	else
+    	printf(ANSI_COLOR_RESET "\t\tPlay\n");
+
+	if (selection_position == OPTIONS)
+    	printf(ANSI_COLOR_GREEN "\t\tOptions\n" ANSI_COLOR_RESET);
+	else
+    	printf(ANSI_COLOR_RESET "\t\tOptions\n");
+
+	if (selection_position == QUIT_GAME)
+    	printf(ANSI_COLOR_GREEN "\t\tExit\n" ANSI_COLOR_RESET);
+	else
+    	printf(ANSI_COLOR_RESET "\t\tExit\n");
 
     gotoxy(13, 6 + selection_position);
-    printf("->");
+    printf(ANSI_COLOR_GREEN "->" ANSI_COLOR_RESET);
 }
 
 /**
