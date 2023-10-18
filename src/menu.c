@@ -65,27 +65,26 @@ extern menu_selection_t menu() {
  */
 static void show_menu(const menu_selection_t selection_position) {
     gotoxy(0, 0);
-    printf( ANSI_COLOR_YELLOW
-        " ╔═════════════════════════════════╗\n"
-        " ║   4Wins - by Double Dynominik   ║\n"
-        " ╚═════════════════════════════════╝\n"
-	ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_YELLOW
+           " ╔═════════════════════════════════╗\n"
+           " ║   4Wins - by Double Dynominik   ║\n"
+           " ╚═════════════════════════════════╝\n" ANSI_COLOR_RESET);
     gotoxy(0, 6);
 
-	if (selection_position == PLAY)
-    	printf(ANSI_COLOR_GREEN "\t\tPlay\n" ANSI_COLOR_RESET);
-	else
-    	printf(ANSI_COLOR_RESET "\t\tPlay\n");
+    if (selection_position == PLAY)
+        printf(ANSI_COLOR_GREEN "\t\tPlay\n" ANSI_COLOR_RESET);
+    else
+        printf(ANSI_COLOR_RESET "\t\tPlay\n");
 
-	if (selection_position == OPTIONS)
-    	printf(ANSI_COLOR_GREEN "\t\tOptions\n" ANSI_COLOR_RESET);
-	else
-    	printf(ANSI_COLOR_RESET "\t\tOptions\n");
+    if (selection_position == OPTIONS)
+        printf(ANSI_COLOR_GREEN "\t\tOptions\n" ANSI_COLOR_RESET);
+    else
+        printf(ANSI_COLOR_RESET "\t\tOptions\n");
 
-	if (selection_position == QUIT_GAME)
-    	printf(ANSI_COLOR_GREEN "\t\tExit\n" ANSI_COLOR_RESET);
-	else
-    	printf(ANSI_COLOR_RESET "\t\tExit\n");
+    if (selection_position == QUIT_GAME)
+        printf(ANSI_COLOR_GREEN "\t\tExit\n" ANSI_COLOR_RESET);
+    else
+        printf(ANSI_COLOR_RESET "\t\tExit\n");
 
     gotoxy(13, 6 + selection_position);
     printf(ANSI_COLOR_GREEN "->" ANSI_COLOR_RESET);
@@ -108,8 +107,7 @@ static bool handle_key_input(menu_selection_t *selection_position) {
     key_selection = get_key_input();
     switch (key_selection) {
         case ARROW_UP:
-            if (*selection_position > 0)
-                *selection_position = *selection_position - 1;
+            if (*selection_position > 0) *selection_position = *selection_position - 1;
             break;
         case ARROW_DOWN:
             if (*selection_position < MENU_ENTRIES - 1)
