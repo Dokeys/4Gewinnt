@@ -26,6 +26,7 @@ int main() {
                 break;
             case OPTIONS:
                 printf("Options not implemented jet :-(\n");
+				get_key_input();
                 break;
             case QUIT_GAME:
                 // TODO Implement random funny bye sentences feature.
