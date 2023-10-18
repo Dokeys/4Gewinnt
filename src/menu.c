@@ -67,7 +67,7 @@ static void show_menu(const menu_selection_t selection_position) {
     gotoxy(0, 0);
     printf(
         " ╔═════════════════════════════════╗\n"
-        " ║ 4 Gewinnt - by Double Dynominik ║\n"
+        " ║   4Wins - by Double Dynominik   ║\n"
         " ╚═════════════════════════════════╝\n");
     gotoxy(0, 6);
     printf(
@@ -107,7 +107,6 @@ static bool handle_key_input(menu_selection_t *selection_position) {
             is_return_pressed = true;
             break;
         default:
-            printf("Unhanded input!\n");
             break;
     }
 
