@@ -6,7 +6,7 @@
 /**
  * @brief Start 4wins game
  *
- * The starts the main game and retuns when the game is over. 
+ * The starts the main game and retuns when the game is over.
  */
 extern void start_game();
 

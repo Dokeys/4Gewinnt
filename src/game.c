@@ -85,16 +85,13 @@ extern void start_game() {
 /* Private Functions **********************************************************/
 
 static void show_title() {
-    printf( ANSI_COLOR_YELLOW
-        " ╔═════════════════════════════════╗\n"
-        " ║   4Wins - by Double Dynominik   ║\n"
-        " ╚═════════════════════════════════╝\n"
-	ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_YELLOW
+           " ╔═════════════════════════════════╗\n"
+           " ║   4Wins - by Double Dynominik   ║\n"
+           " ╚═════════════════════════════════╝\n" ANSI_COLOR_RESET);
 }
 
-static void clear_board() {
-	memset(board, 0x00, sizeof(board)); 
-}
+static void clear_board() { memset(board, 0x00, sizeof(board)); }
 
 static void show_board() {
     uint8_t x, y;
@@ -126,7 +123,7 @@ static void show_board() {
         }
         printf("_\n");
     }
-	printf("" ANSI_COLOR_RESET);
+    printf("" ANSI_COLOR_RESET);
 }
 
 static void show_placement_arrow(const uint8_t arrow_position, const player_t current_player) {
@@ -229,10 +226,11 @@ static bool check_field_horizontal(player_t *winner) {
 
     for (uint8_t y = 0; y < BOARD_SIZE_Y; y++) {
         for (uint8_t x = 0; x < BOARD_SIZE_X; x++) {
-            chip_in_current_field = *(*(board + x) + y);
+            chip_in_current_field = board[x][y];
             if ((chip_in_last_field == chip_in_current_field) && (chip_in_current_field != EMPTY)) {
                 chips_in_a_row++;
-                if (chips_in_a_row >= CHIP_NUMBER_TO_WIN - 1 && !is_winner_row_detected) {
+                if ((chips_in_a_row >= CHIP_NUMBER_TO_WIN - 1) &&
+                    (is_winner_row_detected == false)) {
                     is_winner_row_detected = true;
                     *winner = (player_t)chip_in_current_field;
                 }
@@ -252,10 +250,11 @@ static bool check_field_vertical(player_t *winner) {
 
     for (uint8_t x = 0; x < BOARD_SIZE_X; x++) {
         for (uint8_t y = 0; y < BOARD_SIZE_Y; y++) {
-            chip_in_current_field = *(*(board + x) + y);
+            chip_in_current_field = board[x][y];
             if ((chip_in_last_field == chip_in_current_field) && (chip_in_current_field != EMPTY)) {
                 chips_in_a_row++;
-                if (chips_in_a_row >= CHIP_NUMBER_TO_WIN - 1 && !is_winner_row_detected) {
+                if ((chips_in_a_row >= CHIP_NUMBER_TO_WIN - 1) &&
+                    (is_winner_row_detected == false)) {
                     is_winner_row_detected = true;
                     *winner = (player_t)chip_in_current_field;
                 }
@@ -272,6 +271,7 @@ static bool check_field_vertical(player_t *winner) {
 static bool check_field_diagonal(player_t *winner) {
     bool is_winner_row_detected = false;
     uint8_t chips_in_a_row = 0;
+    uint8_t chips_in_a_row_counter = 0;
     field_placement_t chip_in_current_field;
 
     for (uint8_t x = 0; x < BOARD_SIZE_X; x++) {
@@ -279,24 +279,28 @@ static bool check_field_diagonal(player_t *winner) {
             if (*(*(board + x) + y) != EMPTY) {
                 /* look for a winning row */
                 chips_in_a_row = 1;
-                chip_in_current_field = *(*(board + x) + y);
-                for (uint8_t i = 0; i < CHIP_NUMBER_TO_WIN; i++) { /* up and right */
-                    if ((x + i + 1 <= BOARD_SIZE_X)                /* check if placement check
-                                                                      is still in the field */
-                        && (*(*(board + x + i + 1) + y + i + 1) == chip_in_current_field)) {
+                chip_in_current_field = board[x][y];
+                for (chips_in_a_row_counter = 0; chips_in_a_row_counter < CHIP_NUMBER_TO_WIN;
+                     chips_in_a_row_counter++) {                         /* up and right */
+                    if ((x + chips_in_a_row_counter + 1 <= BOARD_SIZE_X) /* check if placement check
+                                                       is still in the field */
+                        && (board[x + chips_in_a_row_counter + 1][y + chips_in_a_row_counter + 1] ==
+                            chip_in_current_field)) {
                         chips_in_a_row++;
                     } else {
                         break; /*leave for loop if there is a different chip */
                     }
-                    if (chips_in_a_row == CHIP_NUMBER_TO_WIN && !is_winner_row_detected) {
+                    if (chips_in_a_row == CHIP_NUMBER_TO_WIN && is_winner_row_detected == false) {
                         is_winner_row_detected = true;
                         *winner = (player_t)chip_in_current_field;
                     }
                 }
-                for (uint8_t i = 0; i < CHIP_NUMBER_TO_WIN; i++) { /* up and left */
-                    if ((x - i - 1 <= BOARD_SIZE_X)                /* check if placement check
-                                                                      is still in the field */
-                        && (*(*(board + x - i - 1) + y + i + 1) == chip_in_current_field)) {
+                for (chips_in_a_row_counter = 0; chips_in_a_row_counter < CHIP_NUMBER_TO_WIN;
+                     chips_in_a_row_counter++) {                         /* up and left */
+                    if ((x - chips_in_a_row_counter - 1 <= BOARD_SIZE_X) /* check if placement check
+                                                       is still in the field */
+                        && (board[x - chips_in_a_row_counter - 1][y + chips_in_a_row_counter + 1] ==
+                            chip_in_current_field)) {
                         chips_in_a_row++;
                     } else {
                         break; /*leave for loop if there is a different chip */
@@ -315,10 +319,10 @@ static bool check_field_diagonal(player_t *winner) {
 
 static void show_winning_message(const player_t winner) {
     printf("\n\nPlayer ");
-	if(winner == PLAYER_1) 
-    	printf(ANSI_COLOR_RED "O" ANSI_COLOR_RESET);
-	else
-    	printf(ANSI_COLOR_YELLOW "@" ANSI_COLOR_RESET);
-		
-	printf(" wins!\n\n");
+    if (winner == PLAYER_1)
+        printf(ANSI_COLOR_RED "O" ANSI_COLOR_RESET);
+    else
+        printf(ANSI_COLOR_YELLOW "@" ANSI_COLOR_RESET);
+
+    printf(" wins!\n\n");
 }
