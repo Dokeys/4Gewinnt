@@ -2,12 +2,15 @@ CC= gcc
 LD= gcc
 
 CFLAGS= -std=c99 -Wall -g
-INC_DIR= inc/
 LDFLAGS=
 LIBS =
 
+MODULES = menu game functionlib
+MODULES_DIR = $(addprefix src/,$(MODULES))
+INCLUDES = $(addprefix -I,$(MODULES_DIR))
 BIN_FILE = 4Wins.elf 
 BUILD_DIR = build/
+OBJECT_FILES = $(BUILD_DIR)main.o $(addsuffix .o, $(addprefix $(BUILD_DIR),$(MODULES)))
 
 all: pre_build build_program
 
@@ -20,20 +23,20 @@ create_folders:
 		mkdir -p $(BUILD_DIR); \
 	fi
 
-$(BIN_FILE): $(BUILD_DIR)main.o $(BUILD_DIR)menu.o $(BUILD_DIR)game.o $(BUILD_DIR)functionlib.o
+$(BIN_FILE): $(OBJECT_FILES)
 	$(LD) $(LIBS) $(LDFLAGS) $^ -o $(BIN_FILE)
 
 $(BUILD_DIR)main.o: src/main.c
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $? -o $@ 
+	$(CC) $? $(CFLAGS) $(INCLUDES) -c -o $@ 
 
-$(BUILD_DIR)menu.o: src/menu.c inc/menu.h
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@ 
+$(BUILD_DIR)menu.o: src/menu/menu.c src/menu/menu.h
+	$(CC) $< $(CFLAGS) $(INCLUDES) -c -o $@ 
 
-$(BUILD_DIR)game.o: src/game.c inc/game.h
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@ 
+$(BUILD_DIR)game.o: src/game/game.c src/game/game.h
+	$(CC) $< $(CFLAGS) $(INCLUDES) -c -o $@ 
 
-$(BUILD_DIR)functionlib.o: src/functionlib.c inc/functionlib.h
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@ 
+$(BUILD_DIR)functionlib.o: src/functionlib/functionlib.c src/functionlib/functionlib.h
+	$(CC) $< $(CFLAGS) $(INCLUDES) -c -o $@ 
 
 run:
 	./$(BIN_FILE)
